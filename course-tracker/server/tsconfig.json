@@ -1,0 +1,16 @@
+{
+  "compilerOptions": {
+    "target": "ES2020",       // Компилируем в современный стандарт JS
+    "module": "commonjs",      // Система модулей, которую использует Node.js
+    "rootDir": "./src",        // Где лежит наш исходный код TS
+    "outDir": "./dist",        // Куда складывать скомпилированный JS (для production)
+    "esModuleInterop": true,   // Для лучшей совместимости с JS-модулями
+    "forceConsistentCasingInFileNames": true,
+    "strict": true,            // Включает все строгие проверки типов (ОЧЕНЬ ХОРОШО)
+    "skipLibCheck": true,
+    "resolveJsonModule": true,
+    "typeRoots": ["./node_modules/@types", "./src/types"],
+  },
+  "include": ["src/**/*"],
+  "exclude": ["node_modules", "**/*.spec.ts", "**/*.test.ts"]
+}

@@ -7,6 +7,7 @@ import { createCourse,
          updateCourse,
          deleteCourse 
  } from '../controllers/course.controller';
+import { getModulesForCourse } from '../controllers/module.controller';
 import validate from '../middleware/validate.middleware';
 import { createCourseSchema,
          updateCourseSchema,
@@ -25,5 +26,10 @@ router
     .get(protect, validate(courseIdParamSchema), getCourseById) // GET/api/courses/:id
     .put(protect, validate(updateCourseSchema), updateCourse) // PUT/api/courses/:id
     .delete(protect, validate(courseIdParamSchema), deleteCourse); // DELETE/api/courses/:id
+
+// 'GET /api/courses/:id/modules'
+router
+  .route('/:id/modules')
+  .get(protect, validate(courseIdParamSchema), getModulesForCourse);
     
 export default router;

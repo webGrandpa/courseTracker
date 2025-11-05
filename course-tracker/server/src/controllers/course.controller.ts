@@ -7,7 +7,7 @@ import Course from '../models/course.model';
 // @desc    Create a new course
 // @route   POST /api/courses
 // @access  Private
-export const createCourse = asyncHandler(async (req: Request, res: response) => {
+export const createCourse = asyncHandler(async (req: Request, res: Response) => {
     const { title, instructor, description, status } = req.body;
 
     //get req.user from protect middleware

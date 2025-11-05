@@ -5,6 +5,8 @@ import connectDB from './config/db';
 import authRoutes from './routes/auth.routes';
 import { errorHandler } from './middleware/error.middleware';
 import courseRoutes from './routes/course.routes';
+import moduleRoutes from './routes/module.routes';
+import assignmentRoutes from './routes/assignment.routes';
 
 // Загружаем переменные окружения
 dotenv.config();
@@ -15,10 +17,17 @@ connectDB();
 const app: Express = express();
 
 // --- MIDDLEWARES ---
-// Это middleware позволяет нам принимать JSON-данные в req.body
+// middleware for parsing JSON bodies
 app.use(express.json());
-// Это middleware позволяет принимать данные из URL-encoded форм
+// middleware for parsing URL-encoded bodies
 app.use(express.urlencoded({ extended: false }));
+// -------------------
+// assignment routes
+app.use('/api/assignments', assignmentRoutes);
+
+// --------------------
+// --- MODULE ROUTES ---
+app.use('/api/modules', moduleRoutes);
 // --------------------
 
 const PORT = process.env.PORT || 5001;

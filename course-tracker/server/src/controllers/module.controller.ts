@@ -3,6 +3,7 @@ import { Request, Response } from 'express';
 import asyncHandler from 'express-async-handler';
 import Module from '../models/module.model';
 import Course from '../models/course.model';
+import Assignment from '../models/assignment.model';
 
 
 // @desc    Create a new module
@@ -119,10 +120,11 @@ export const deleteModule = asyncHandler(async (req: Request, res: Response) => 
     throw new Error('User not authorized to delete this module');
   }
 
-  // delete module
+  await Assignment.deleteMany({ module: req.params.id, user: req.user._id });
+
   await Module.findByIdAndDelete(req.params.id);
 
   res
     .status(200)
-    .json({ message: 'Module deleted successfully', id: req.params.id });
+    .json({ message: 'Module and its assignments deleted', id: req.params.id });
 });

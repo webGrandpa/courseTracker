@@ -3,6 +3,8 @@
 import { Request, Response } from 'express';
 import asyncHandler from 'express-async-handler';
 import Course from '../models/course.model';
+import Module from '../models/module.model';
+import Assignment from '../models/assignment.model';
 
 // @desc    Create a new course
 // @route   POST /api/courses
@@ -108,29 +110,44 @@ export const updateCourse = asyncHandler(
 // @access  Private
 
 export const deleteCourse = asyncHandler(
-    async (req: Request, res: Response) => {
+  async (req: Request, res: Response) => {
+    const course = await Course.findById(req.params.id);
 
-        //find course by id
-        const course = await Course.findById(req.params.id);
-
-        //check if course exists
-        if (!course) {
-            res.status(404);
-            throw new Error('Course not found');
-        }
-
-        //check if user is authorized to delete the course
-        if (course.user.toString() !== req.user?._id.toString()) {
-            res.status(401);
-            throw new Error('User not authorized to delete this course');
-        }
-        
-        //delete course
-        await Course.findByIdAndDelete(req.params.id);
-
-        res.status(200).json({
-            message: 'Course deleted successfully',
-            id: req.params.id,
-        });
+    if (!course) {
+      res.status(404);
+      throw new Error('Course not found');
     }
+
+    if (course.user.toString() !== req.user?._id.toString()) {
+      res.status(401);
+      throw new Error('User not authorized to delete this course');
+    }
+
+
+    const modules = await Module.find({ 
+      course: req.params.id, 
+      user: req.user._id 
+    });
+
+    const moduleIds = modules.map(m => m._id);
+
+    await Assignment.deleteMany({ 
+      module: { $in: moduleIds }, 
+      user: req.user._id 
+    });
+
+    await Module.deleteMany({ 
+      _id: { $in: moduleIds }, 
+      user: req.user._id 
+    });
+
+    await Course.findByIdAndDelete(req.params.id);
+
+    // ------------------------------------
+
+    res.status(200).json({
+      message: 'Course, modules, and assignments deleted successfully',
+      id: req.params.id,
+    });
+  }
 );

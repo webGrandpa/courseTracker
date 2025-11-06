@@ -7,6 +7,7 @@ import { errorHandler } from './middleware/error.middleware';
 import courseRoutes from './routes/course.routes';
 import moduleRoutes from './routes/module.routes';
 import assignmentRoutes from './routes/assignment.routes';
+import cors from 'cors'
 
 // Загружаем переменные окружения
 dotenv.config();
@@ -26,6 +27,7 @@ app.use(express.urlencoded({ extended: false }));
 app.use('/api/assignments', assignmentRoutes);
 
 // --------------------
+app.use(cors())
 // --- MODULE ROUTES ---
 app.use('/api/modules', moduleRoutes);
 // --------------------

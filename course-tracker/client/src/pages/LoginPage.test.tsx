@@ -8,8 +8,7 @@ import LoginPage from './LoginPage'
 // "Подделываем" react-router. 'vi.fn()' - это "шпион"
 const mockNavigate = vi.fn()
 vi.mock('react-router-dom', async (importOriginal) => {
-  // @ts-ignore
-  const actual = await importOriginal()
+  const actual = await importOriginal<Record<string, any>>()
   return {
     ...actual,
     useNavigate: () => mockNavigate,

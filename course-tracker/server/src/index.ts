@@ -1,51 +1,28 @@
 // server/src/index.ts
-import express, { Express, Request, Response } from 'express';
+import app from './app'; // <-- 1. Импортируем "созданный" app
 import dotenv from 'dotenv';
 import connectDB from './config/db';
-import authRoutes from './routes/auth.routes';
-import { errorHandler } from './middleware/error.middleware';
-import courseRoutes from './routes/course.routes';
-import moduleRoutes from './routes/module.routes';
-import assignmentRoutes from './routes/assignment.routes';
-import cors from 'cors'
 
-// Загружаем переменные окружения
+// 2. Загружаем .env, чтобы 'process.env.PORT' был доступен
 dotenv.config();
 
-// Подключаемся к MongoDB
-connectDB();
-
-const app: Express = express();
-
-// --- MIDDLEWARES ---
-// middleware for parsing JSON bodies
-app.use(express.json());
-// middleware for parsing URL-encoded bodies
-app.use(express.urlencoded({ extended: false }));
-// -------------------
-// assignment routes
-app.use('/api/assignments', assignmentRoutes);
-
-// --------------------
-app.use(cors())
-// --- MODULE ROUTES ---
-app.use('/api/modules', moduleRoutes);
-// --------------------
-
+// 3. Определяем порт
 const PORT = process.env.PORT || 5001;
 
-// --- ROUTES ---
-app.use('/api/auth', authRoutes); // use auth routes
-app.use('/api/courses', courseRoutes); // use course routes
+// 4. Функция Start
+const startServer = async () => {
+  try {
+    await connectDB(); // Сначала подключаемся к БД
+    
+    // Только после успеха БД - запускаем "слушателя"
+    app.listen(PORT, () => {
+      console.log(`✅ Server is running on http://localhost:${PORT}`);
+    });
+  } catch (error) {
+     console.error('🛑 Failed to start server', error)
+     process.exit(1)
+  }
+}
 
-app.get('/api/test', (req: Request, res: Response) => {
-  res.status(200).json({ message: 'Server is running! 🚀' });
-});
-
-// --- ERROR HANDLING MIDDLEWARE ---
-app.use(errorHandler);
-// ---------------------------------
-
-app.listen(PORT, () => {
-  console.log(`✅ Server is running on http://localhost:${PORT}`);
-});
+// 5. Запускаем все
+startServer();

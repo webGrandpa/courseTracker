@@ -4,7 +4,6 @@ import { render, screen, fireEvent, waitFor } from '@testing-library/react'
 import { MemoryRouter } from 'react-router-dom'
 import LoginPage from './LoginPage'
 
-// 1. 🔻🔻🔻 "ПОДДЕЛКА" (MOCKING) 🔻🔻🔻
 
 // "Подделываем" react-router. 'vi.fn()' - это "шпион"
 const mockNavigate = vi.fn()
@@ -12,8 +11,8 @@ vi.mock('react-router-dom', async (importOriginal) => {
   // @ts-ignore
   const actual = await importOriginal()
   return {
-    ...actual, // Сохраняем все оригинальное (Link, Routes...)
-    useNavigate: () => mockNavigate, // ...но ПОДМЕНЯЕМ useNavigate
+    ...actual,
+    useNavigate: () => mockNavigate,
   }
 })
 
@@ -41,13 +40,11 @@ vi.mock('../services/authService', () => ({
 // Импортируем authService ПОСЛЕ того, как он "подделан"
 import authService from '../services/authService'
 
-// 2. 🔻🔻🔻 "ЧИСТКА" 🔻🔻🔻
 // После каждого теста "сбрасываем" счетчики у "шпионов"
 beforeEach(() => {
   vi.clearAllMocks()
 })
 
-// 3. 🔻🔻🔻 ТЕСТЫ 🔻🔻🔻
 describe('LoginPage Component', () => {
 
   // "Вспомогательная" функция, чтобы не повторять код

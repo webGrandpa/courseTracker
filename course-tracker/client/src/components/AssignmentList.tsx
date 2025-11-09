@@ -1,7 +1,6 @@
 // client/src/components/AssignmentList.tsx
 import React from 'react'
 
-// Временный тип
 interface Assignment {
   _id: string
   title: string
@@ -19,7 +18,6 @@ const AssignmentList: React.FC<AssignmentListProps> = ({ assignments }) => {
   }
 
   return (
-    // --- Минимальный Каркас (Tailwind) ---
     <div className="mt-3 pl-4 border-l-2 border-gray-700">
       <ul className="list-none space-y-2">
         {assignments.map((assignment) => (

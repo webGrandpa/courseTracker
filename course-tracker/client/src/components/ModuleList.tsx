@@ -1,8 +1,7 @@
 // client/src/components/ModuleList.tsx
 import React from 'react'
-import ModuleItem from './ModuleItem' // <-- 1. Импорт "умного" ребенка
+import ModuleItem from './ModuleItem' 
 
-// Временный тип
 interface Module {
   _id: string
   title: string
@@ -20,11 +19,8 @@ const ModuleList: React.FC<ModuleListProps> = ({ modules }) => {
   }
 
   return (
-    // --- Минимальный Каркас (Tailwind) ---
     <div className="mt-6 space-y-4">
-      {/* 2. "Бежим" по модулям */}
       {modules.map((module) => (
-        // 3. "Рождаем" "умный" компонент, передавая ему 1 модуль
         <ModuleItem key={module._id} module={module} />
       ))}
     </div>

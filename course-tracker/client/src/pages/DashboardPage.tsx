@@ -34,37 +34,29 @@ const DashboardPage = () => {
     fetchCourses()
   }, [])
 
-  // Это "callback", который мы передаем в форму
   const handleCourseCreated = () => {
-    setIsModalOpen(false) // 1. Закрываем модальное окно
-    fetchCourses()      // 2. ЗАПРАШИВАЕМ КУРСЫ ЗАНОВО!
+    setIsModalOpen(false)
+    fetchCourses()
   }
 
-  // ... (Логика 'if (isLoading)' остается без изменений)
   if (isLoading) {
     return <div className="p-8 text-white">Loading your courses...</div>
   }
 
-  // --- "Рисуем" страницу ---
   return (
-    // --- Минимальный Каркас (Tailwind) ---
     <div className="p-8">
-      {/* --- Шапка --- */}
       <div className="mb-6 flex items-center justify-between">
         <h1 className="text-3xl font-bold text-white">
           Your Courses
         </h1>
-        {/* 🔻🔻🔻 НАША НОВАЯ КНОПКА 🔻🔻🔻 */}
         <button
-          onClick={() => setIsModalOpen(true)} // "Включаем" модальное окно
+          onClick={() => setIsModalOpen(true)}
           className="rounded-lg bg-blue-600 px-4 py-2 text-white hover:bg-blue-700"
         >
           + New Course
         </button>
       </div>
 
-      {/* --- Сетка Курсов --- */}
-      {/* Если курсов нет, показываем сообщение */}
       {!isLoading && courses.length === 0 && (
         <div className="text-center text-gray-400">
           <p>You haven't created any courses yet.</p>
@@ -72,17 +64,14 @@ const DashboardPage = () => {
         </div>
       )}
 
-      {/* "Рисуем" сетку, если курсы есть */}
       <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
         {courses.map((course) => (
-          // 🔻🔻🔻 2. "ОБОРАЧИВАЕМ" КАРТОЧКУ В ССЫЛКУ 🔻🔻🔻
-          <Link 
+=          <Link 
             key={course._id} 
-            to={`/course/${course._id}`} // Динамический URL
+            to={`/course/${course._id}`}
           >
-            {/* 3. Убираем key из div, т.к. он теперь на <Link> */}
             <div
-              className="rounded-lg bg-gray-800 p-6 shadow-lg transition-transform hover:scale-105 hover:bg-gray-700" // Добавил hover:bg-gray-700
+              className="rounded-lg bg-gray-800 p-6 shadow-lg transition-transform hover:scale-105 hover:bg-gray-700"
             >
               <h2 className="mb-2 text-xl font-bold text-white">
                 {course.title}
@@ -98,16 +87,13 @@ const DashboardPage = () => {
         ))}
       </div>
 
-      {/* 🔻🔻🔻 НАШЕ МОДАЛЬНОЕ ОКНО 🔻🔻🔻 */}
-      {/* Оно "рисуется" здесь, но "невидимо", пока isOpen=false */}
       <Modal 
         title="Create New Course"
         isOpen={isModalOpen} 
-        onClose={() => setIsModalOpen(false)} // Передаем функцию закрытия
+        onClose={() => setIsModalOpen(false)}
       >
-        {/* Вставляем "начинку" (форму) */}
         <CreateCourseForm 
-          onSuccess={handleCourseCreated} // Передаем "callback"
+          onSuccess={handleCourseCreated}
         />
       </Modal>
 

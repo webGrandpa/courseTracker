@@ -7,38 +7,30 @@ import authService from '../services/authService'
 const RegisterPage = () => {
   const { dispatch } = useAuth()
   const navigate = useNavigate()
-  // 'watch' отслеживает значение поля, 'setError' позволяет нам устанавливать ошибки
   const { register, handleSubmit, watch, setError, formState: { errors } } = useForm()
 
-  // Следим за полем 'password', чтобы сравнить его с 'confirmPassword'
   const password = watch('password')
 
   const onSubmit = async (data: any) => {
-    // 1. Проверка на совпадение паролей
     if (data.password !== data.confirmPassword) {
-      // Устанавливаем кастомную ошибку, если пароли не совпали
       setError('confirmPassword', {
         type: 'manual',
         message: 'Passwords do not match',
       })
-      return // Останавливаем выполнение
+      return
     }
 
     try {
-      // 2. "Звоним" на бэкенд
       const userData = await authService.register({
         email: data.email,
         password: data.password,
       })
 
-      // 3. "Сообщаем" "мозгу" (Context), что мы сразу залогинились
       dispatch({ type: 'LOGIN_SUCCESS', payload: userData })
 
-      // 4. Перенаправляем на главную
       navigate('/')
     } catch (error: any) {
       console.error('Failed to register:', error)
-      // Устанавливаем ошибку, если email уже занят
       if (error.response && error.response.data.message.includes('User already exists')) {
          setError('email', {
           type: 'manual',
@@ -49,7 +41,6 @@ const RegisterPage = () => {
   }
 
   return (
-    // --- Минимальный Стиль Каркаса (Tailwind) ---
     <div className="flex min-h-screen items-center justify-center p-4">
       <form
         onSubmit={handleSubmit(onSubmit)}
@@ -70,7 +61,6 @@ const RegisterPage = () => {
             {...register('email', { required: 'Email is required' })}
             className="w-full rounded-md border border-gray-600 bg-gray-700 p-2.5 text-white focus:border-blue-500 focus:outline-none"
           />
-          {/* Показываем ошибку валидации */}
           {errors.email && (
             <p className="mt-1 text-xs text-red-400">{errors.email.message as string}</p>
           )}

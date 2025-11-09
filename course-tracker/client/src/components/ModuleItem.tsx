@@ -16,15 +16,13 @@ interface Assignment {
 }
 
 interface ModuleItemProps {
-  module: Module // <-- "Родитель" (ModuleList) дает нам 1 модуль
+  module: Module 
 }
 
 const ModuleItem: React.FC<ModuleItemProps> = ({ module }) => {
-  // 1. "Коробки" для заданий и загрузки (для ЭТОГО модуля)
   const [assignments, setAssignments] = useState<Assignment[]>([])
   const [isLoading, setIsLoading] = useState(true)
 
-  // 2. useEffect "звонит" на бэкенд, используя ID *этого* модуля
   useEffect(() => {
     const fetchAssignments = async () => {
       try {
@@ -38,20 +36,16 @@ const ModuleItem: React.FC<ModuleItemProps> = ({ module }) => {
     }
 
     fetchAssignments()
-  }, [module._id]) // <-- "Крючок" зависит от ID модуля
+  }, [module._id]) 
 
   return (
-    // --- Минимальный Каркас (Tailwind) ---
     <div className="rounded-lg bg-gray-800 p-4 shadow">
-      {/* 1. "Рисуем" инфо о Модуле */}
       <h3 className="text-lg font-semibold text-white">{module.title}</h3>
       <p className="mt-1 text-sm text-gray-400">{module.description}</p>
 
-      {/* 2. "Рисуем" Задания */}
       {isLoading ? (
         <p className="mt-2 text-xs text-gray-500">Loading assignments...</p>
       ) : (
-        // 3. Используем "глупый" компонент-каркас
         <AssignmentList assignments={assignments} />
       )}
     </div>

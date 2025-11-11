@@ -3,7 +3,7 @@ import asyncHandler from 'express-async-handler';
 import User from '../models/user.model';
 import { Request, Response, NextFunction } from 'express';
 
-// Интерфейс для нашего "декодированного" токена
+// დეკოდერის ინტერფეისი
 interface JwtPayload {
   id: string;
 }
@@ -12,26 +12,22 @@ export const protect = asyncHandler(
   async (req: Request, res: Response, next: NextFunction) => {
     let token;
 
-    // 1. Проверяем, есть ли заголовок authorization и начинается ли он с 'Bearer'
+    // ვამოწმებთ გვაქვს თუ არა ჰედერი და აქვს თუ არა მას ბეარერ ტოკქნი
     if (
       req.headers.authorization &&
       req.headers.authorization.startsWith('Bearer')
     ) {
       try {
-        // 2. Получаем сам токен (отрезаем 'Bearer ' из строки)
+        //ვღებულობთ ტოკენს
         token = req.headers.authorization.split(' ')[1];
 
-        // 3. Верифицируем (проверяем) токен
-        // jwt.verify "вскрывает" токен с помощью нашего секрета
         const decoded = jwt.verify(
           token,
           process.env.JWT_SECRET as string
         ) as JwtPayload;
 
-        // 4. Находим пользователя в БД по ID из токена
-        // Мы "прикрепляем" пользователя к объекту req,
-        // чтобы он был доступен во всех следующих контроллерах
-        // @ts-ignore
+        // ვეძებთ მომხმ თოქ იდ
+        
         req.user = await User.findById(decoded.id).select('-password');
         
         if (!req.user) {
@@ -39,11 +35,10 @@ export const protect = asyncHandler(
            throw new Error('User not found');
         }
 
-        // 5. Передаем управление следующему middleware (контроллеру)
         next();
       } catch (error) {
         console.error(error);
-        res.status(401); // 401 - Unauthorized
+        res.status(401);
         throw new Error('Not authorized, token failed');
       }
     }

@@ -1,27 +1,30 @@
-// client/src/components/CreateCourseForm.tsx
+// client/src/components/CreateModuleForm.tsx
 import React from 'react'
 import { useForm } from 'react-hook-form'
-import courseService from '../services/courseService'
+import moduleService from '../services/moduleService'
 
-interface CreateCourseFormProps {
-  onSuccess: () => void 
+interface CreateModuleFormProps {
+  courseId: string 
+  onSuccess: () => void
 }
 
 type FormData = {
   title: string
-  instructor: string
   description: string
 }
 
-const CreateCourseForm: React.FC<CreateCourseFormProps> = ({ onSuccess }) => {
+const CreateModuleForm: React.FC<CreateModuleFormProps> = ({ courseId, onSuccess }) => {
   const { register, handleSubmit, formState: { errors } } = useForm<FormData>()
 
   const onSubmit = async (data: FormData) => {
     try {
-      await courseService.createCourse(data)
+      await moduleService.createModule({
+        ...data,
+        courseId: courseId,
+      })
       onSuccess() 
     } catch (error) {
-      console.error('Failed to create course:', error)
+      console.error('Failed to create module:', error)
     }
   }
 
@@ -30,7 +33,7 @@ const CreateCourseForm: React.FC<CreateCourseFormProps> = ({ onSuccess }) => {
       {/* Title */}
       <div className="mb-4">
         <label htmlFor="title" className="mb-2 block text-sm font-medium text-gray-300">
-          Course Title
+          Module Title
         </label>
         <input
           id="title"
@@ -40,27 +43,27 @@ const CreateCourseForm: React.FC<CreateCourseFormProps> = ({ onSuccess }) => {
         {errors.title && <p className="mt-1 text-xs text-red-400">{errors.title.message}</p>}
       </div>
 
-      {/* Instructor (Optional) */}
+      {/* Description (Optional) */}
       <div className="mb-4">
-        <label htmlFor="instructor" className="mb-2 block text-sm font-medium text-gray-300">
-          Instructor (Optional)
+        <label htmlFor="description" className="mb-2 block text-sm font-medium text-gray-300">
+          Description (Optional)
         </label>
-        <input
-          id="instructor"
-          {...register('instructor')}
+        <textarea
+          id="description"
+          {...register('description')}
+          rows={3}
           className="w-full rounded-md border border-gray-600 bg-gray-700 p-2.5 text-white"
         />
       </div>
 
-      {/* Description */}
       <button
         type="submit"
         className="w-full rounded-lg bg-blue-600 p-2.5 text-white hover:bg-blue-700"
       >
-        Create Course
+        Create Module
       </button>
     </form>
   )
 }
 
-export default CreateCourseForm
+export default CreateModuleForm

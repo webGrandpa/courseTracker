@@ -4,18 +4,17 @@ import jwt from 'jsonwebtoken';
 import User, { IUser } from '../models/user.model';
 import bcrypt from 'bcryptjs';
 
-// --- Вспомогательная функция для генерации JWT ---
+// JWT generacia
 const generateToken = (id: string) => {
-  // 'process.env.JWT_SECRET' - это наш секретный ключ. Мы должны его создать!
   if (!process.env.JWT_SECRET) {
     throw new Error('JWT_SECRET not defined in .env file');
   }
   return jwt.sign({ id }, process.env.JWT_SECRET, {
-    expiresIn: '30d', // Токен будет "жить" 30 дней
+    expiresIn: '30d',
   });
 };
 
-// --- 1. Контроллер для Регистрации ---
+// --- registraciis kontroleri ---
 // @desc    Register a new user
 // @route   POST /api/auth/register
 // @access  Public
@@ -28,7 +27,7 @@ export const registerUser = asyncHandler(async (req: Request, res: Response) => 
     throw new Error('User already exists');
   }
 
-  // БЕЗ 'as IUser'
+ 
   const user = await User.create({
     email,
     password,
@@ -36,9 +35,9 @@ export const registerUser = asyncHandler(async (req: Request, res: Response) => 
 
   if (user) {
     res.status(201).json({ 
-      _id: user._id, // <-- Ошибка должна исчезнуть
+      _id: user._id, 
       email: user.email,
-      token: generateToken(user._id.toString()), // <-- Ошибка должна исчезнуть
+      token: generateToken(user._id.toString()), 
     });
   } else {
     res.status(400);
@@ -46,23 +45,20 @@ export const registerUser = asyncHandler(async (req: Request, res: Response) => 
   }
 });
 
-// --- 2. Контроллер для Логина ---
+// --- loginis kontroleri ---
 // @desc    Authenticate (login) a user
 // @route   POST /api/auth/login
 // @access  Public
 export const loginUser = asyncHandler(async (req: Request, res: Response) => {
   const { email, password } = req.body;
 
-  // БЕЗ 'as IUser | null'
   const user = await User.findOne({ email }).select('+password');
 
-  // 'user' здесь может быть 'null', поэтому 'if (user && ...)'
-  // TypeScript это понимает и внутри 'if' 'user' уже не 'null'
   if (user && (await user.comparePassword(password))) {
     res.json({
-      _id: user._id, // <-- Ошибка должна исчезнуть
+      _id: user._id,
       email: user.email,
-      token: generateToken(user._id.toString()), // <-- Ошибка должна исчезнуть
+      token: generateToken(user._id.toString()),
     });
   } else {
     res.status(401);
@@ -70,16 +66,13 @@ export const loginUser = asyncHandler(async (req: Request, res: Response) => {
   }
 });
 
-// --- 3. Контроллер для получения 'Me' (себя) ---
+// --- me kotroleri ---
 // @desc    Get user profile
 // @route   GET /api/auth/me
-// @access  Private (мы добавим 'protect' middleware позже)
+// @access  Private 
 export const getMe = asyncHandler(async (req: Request, res: Response) => {
-  // Мы УЖЕ получили пользователя из 'protect' middleware!
-  // Он находится в 'req.user'
-  
-  // УБИРАЕМ @ts-ignore
-  const user = req.user; 
+
+    const user = req.user; 
 
   if (user) {
     res.json({
@@ -88,6 +81,6 @@ export const getMe = asyncHandler(async (req: Request, res: Response) => {
     });
   } else {
     res.status(404);
-    throw new Error('User not found (from getMe)'); // Эта ошибка не должна случиться
+    throw new Error('User not found (from getMe)');
   }
 });

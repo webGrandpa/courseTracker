@@ -16,7 +16,7 @@ const app: Express = express();
 // --- MIDDLEWARES ---
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
-app.use(cors()); // <-- CORS здесь
+app.use(cors());
 
 // --- ROUTES ---
 app.use('/api/auth', authRoutes);
@@ -31,5 +31,4 @@ app.get('/api/test', (req: Request, res: Response) => {
 // --- ERROR HANDLING MIDDLEWARE ---
 app.use(errorHandler);
 
-// ЭКСПОРТИРУЕМ app, НЕ ЗАПУСКАЯ ЕГО
 export default app;

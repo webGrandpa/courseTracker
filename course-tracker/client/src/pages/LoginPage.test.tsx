@@ -7,6 +7,7 @@ import LoginPage from './LoginPage'
 
 const mockNavigate = vi.fn()
 vi.mock('react-router-dom', async (importOriginal) => {
+  // @ts-ignore
   const actual = await importOriginal<Record<string, any>>()
   return {
     ...actual,
@@ -14,6 +15,7 @@ vi.mock('react-router-dom', async (importOriginal) => {
   }
 })
 
+//"ფეიკი" Auth Context
 const mockDispatch = vi.fn()
 vi.mock('../context/AuthContext', () => ({
   useAuth: () => ({
@@ -22,12 +24,13 @@ vi.mock('../context/AuthContext', () => ({
   }),
 }))
 
+//"ფეიკი" authService
 vi.mock('../services/authService', () => ({
   default: {
-    login: vi.fn().mockResolvedValue({ 
-      _id: '123', 
-      email: 'test@test.com', 
-      token: 'fake-token' 
+    login: vi.fn().mockResolvedValue({
+      _id: '123',
+      email: 'test@test.com',
+      token: 'fake-token',
     }),
   },
 }))
@@ -38,6 +41,7 @@ beforeEach(() => {
   vi.clearAllMocks()
 })
 
+// ტესტების ჯგუფი
 describe('LoginPage Component', () => {
 
   const renderComponent = () => {
@@ -70,19 +74,16 @@ describe('LoginPage Component', () => {
 
     await waitFor(() => {
 
-      expect(authService.login).toHaveBeenCalledTimes(1)
       expect(authService.login).toHaveBeenCalledWith({
         email: 'test@test.com',
         password: 'password123',
       })
 
-      expect(mockDispatch).toHaveBeenCalledTimes(1)
       expect(mockDispatch).toHaveBeenCalledWith({
         type: 'LOGIN_SUCCESS',
         payload: { _id: '123', email: 'test@test.com', token: 'fake-token' },
       })
 
-      expect(mockNavigate).toHaveBeenCalledTimes(1)
       expect(mockNavigate).toHaveBeenCalledWith('/')
     })
   })

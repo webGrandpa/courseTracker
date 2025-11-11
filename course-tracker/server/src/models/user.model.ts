@@ -3,22 +3,16 @@
 import mongoose, { Schema, Document } from 'mongoose';
 import bcrypt from 'bcryptjs';
 
-// Описываем интерфейс для нашего документа User (для TypeScript)
-//
-// 🔻🔻🔻 ВОТ САМАЯ ВАЖНАЯ СТРОЧКА 🔻🔻🔻
 export interface IUser extends Document {
-  // ----------------------------------------------------
-  // 'extends Document' - это то, что дает нам ._id
-  // ----------------------------------------------------
+
   _id: mongoose.Types.ObjectId;
   email: string;
-  password?: string; // '?' - т.к. мы его не всегда будем выбирать
+  password?: string;
 
-  // Также добавляем наш кастомный метод, чтобы TypeScript "знал" о нем
   comparePassword(enteredPassword: string): Promise<boolean>;
 }
 
-// Создаем Схему
+// schema
 const UserSchema: Schema = new Schema(
   {
     email: {
@@ -41,7 +35,7 @@ const UserSchema: Schema = new Schema(
   }
 );
 
-// Хеширование пароля перед сохранением
+// parolis heshireba
 UserSchema.pre<IUser>('save', async function (next) {
   if (!this.isModified('password') || !this.password) {
     return next();
@@ -58,7 +52,7 @@ UserSchema.pre<IUser>('save', async function (next) {
   }
 });
 
-// Метод для сравнения паролей
+// parolebis Shedarebis methodi
 UserSchema.methods.comparePassword = async function (enteredPassword: string) {
   if (!this.password) {
     return false;
@@ -66,9 +60,8 @@ UserSchema.methods.comparePassword = async function (enteredPassword: string) {
   return await bcrypt.compare(enteredPassword, this.password);
 };
 
-// 🔻🔻🔻 И ВОТ ВТОРАЯ ВАЖНАЯ СТРОЧКА 🔻🔻🔻
-// Мы "связываем" нашу Модель с интерфейсом IUser
-const User = mongoose.model<IUser>('User', UserSchema);
+
+const User = mongoose.model<IUser>('User', UserSchema); //int to model
 // ----------------------------------------------------
 
 export default User;

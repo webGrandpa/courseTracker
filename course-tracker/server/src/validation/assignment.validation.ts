@@ -21,7 +21,7 @@ export const createAssignmentSchema = z.object({
 // for updating assignment
 export const updateAssignmentSchema = z.object({
   body: z.object({
-    title: z.string().min(1).optional(), // Все поля опциональны
+    title: z.string().min(1).optional(),
     dueDate: z.string().datetime().optional(),
     status: z.enum(['Pending', 'Submitted', 'Graded']).optional(),
   }),

@@ -56,7 +56,7 @@ const DashboardPage = () => {
           + New Course
         </button>
       </div>
-
+          {/* xatva */}
       {!isLoading && courses.length === 0 && (
         <div className="text-center text-gray-400">
           <p>You haven't created any courses yet.</p>
@@ -66,7 +66,7 @@ const DashboardPage = () => {
 
       <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
         {courses.map((course) => (
-=          <Link 
+         <Link 
             key={course._id} 
             to={`/course/${course._id}`}
           >

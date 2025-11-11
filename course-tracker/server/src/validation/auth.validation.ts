@@ -11,6 +11,6 @@ export const registerSchema = z.object({
 export const loginSchema = z.object({
   body: z.object({
     email: z.string().email('Not a valid email'),
-    password: z.string().min(1, 'Password is required'), // Для логина просто проверяем, что он не пустой
+    password: z.string().min(1, 'Password is required'),
   }),
 });

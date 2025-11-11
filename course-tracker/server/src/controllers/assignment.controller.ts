@@ -79,26 +79,22 @@ export const getAssignmentsForModule = asyncHandler(
 // @access  Private
 export const updateAssignment = asyncHandler(
   async (req: Request, res: Response) => {
-    // find the assignment
     const assignment = await Assignment.findById(req.params.id);
 
-    // check if it exists
     if (!assignment) {
       res.status(404);
       throw new Error('Assignment not found');
     }
 
-    // validate ownership
     if (assignment.user.toString() !== req.user?._id.toString()) {
       res.status(401);
       throw new Error('User not authorized to update this assignment');
     }
 
-    // update the assignment
     const updatedAssignment = await Assignment.findByIdAndUpdate(
       req.params.id,
       req.body,
-      { new: true, runValidators: true } // new: true = output the updated document
+      { new: true, runValidators: true } 
     );
 
     res.status(200).json(updatedAssignment);

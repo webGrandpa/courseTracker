@@ -7,9 +7,9 @@ import authService from '../services/authService'
 const RegisterPage = () => {
   const { dispatch } = useAuth()
   const navigate = useNavigate()
-  const { register, handleSubmit, watch, setError, formState: { errors } } = useForm()
+  const { register, handleSubmit, setError, formState: { errors } } = useForm()  //watch
 
-  const password = watch('password')
+  // const password = watch('password')
 
   const onSubmit = async (data: any) => {
     if (data.password !== data.confirmPassword) {
